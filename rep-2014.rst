@@ -17,7 +17,7 @@ This REP describes some principles and guidelines for benchmarking performance i
 Motivation
 ==========
 
-Benchmarking is the act of running a computer program with a known workload to assess the program's relative performance. In the context of ROS 2, performance information can help roboticists design more efficient robotic systems and select the right hardware for their robotic application. It can also help understand the trade-offs between different algorithms that implement the same capability, and help them choose the best approach for their use case. Performance data can also be used to compare different versions of ROS 2 and to identify regressions. Finally, performance information can be used to help prioritize future development efforts.
+Benchmarking is the act of running a computer program with a _known workload_ to assess the program's relative performance in a _reproducible setting_. In the context of ROS 2, performance information can help roboticists design more efficient robotic systems and select the right hardware for their robotic application. It can also help understand the trade-offs between different algorithms that implement the same capability, and help them choose the best approach for their use case. Performance data can also be used to compare different versions of ROS 2 and to identify regressions. Finally, performance information can be used to help prioritize future development efforts.
 
 
 The myriad combinations of robot hardware and robotics software make assessing robotic-system performance in an architecture-neutral, representative, and reproducible manner challenging. This REP attempts to provide some guidelines to help roboticists benchmark their systems in a consistent and reproducible manner by following a quantitative approach. This REP also provides a set of tools and examples to help guide roboticists while collecting and reporting performance data.
@@ -37,6 +37,14 @@ A quantitative approach
 -----------------------
 Performance must be studied with real examples and measurements on real robotic computations, rather than simply as a collection of definitions, designs and/or marketing actions. When creating benchmarks, prefer to use realistic data and situations rather than data designed to test one edge case. Follow the quantitative approach [1]_ when designing your architecture.
 
+Achieving Reproducibility
+-------------------------
+
+Results from benchmarking are only meaningful if they are _reproducible_, that is, the benchmark can be repeated with the exact same results, or very close to it. This starts with the workload definition: The workload must be exactly described, and any possibly interfering effects should be removed. 
+
+A challenge here is that, surprisingly often, interfering effects are not fully known. For example, many current computer systems try to optimize power usage, or handle heat issues, by throttling the CPU. This effect is often not captured, and would cause any resultings measurements to be not reproducible. Similarly, on many Linux systems a number of system processes are running which also consume resources. This is sometimes tried to account for by only measuring CPU usage of the system-under-test. However, there are shared CPU resources, such as caches, or when using hyper-threading, where any other process can affect the benchmark.
+
+Therefore, it is imperative that the measures taken to remove interfering effects are exactly specified, so that they can, firstly, be followed when replicating the benchmark, and secondly, also examined for omissions. Since knowledge of such things is constantly evolving, we recommend examining current literature on benchmarking to identify best practices for removal of interfering effects and description of setups. The description in [15] is a good, recent example.
 
 Approaches to benchmark performance
 -----------------------------------
@@ -235,6 +243,8 @@ References and Footnotes
 
 .. [14] acceleration_examples. ROS 2 package examples demonstrating the use of hardware acceleration. 
     https://github.com/ros-acceleration/acceleration_examples
+    
+.. [15] C. Plasberg, H. Nessau, D. Timmermann, C. Eichmann, A. Roennau and R. Dillmann, "Towards Distributed Real-Time capable Robotic Control using ROS2," 2022 IEEE 18th International Conference on Automation Science and Engineering (CASE), 2022, pp. 2205-2210, doi: 10.1109/CASE49997.2022.9926569.
 
 
 Copyright
